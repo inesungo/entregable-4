@@ -2,6 +2,7 @@ package com.playlist.musica.controller;
 
 import com.playlist.musica.model.Video;
 import com.playlist.musica.service.VideoService;
+import com.playlist.musica.service.YouTubeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,15 +13,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class HomeController {
 
     private final VideoService videoService;
+    private final YouTubeService youTubeService;
 
     @Autowired
-    public HomeController(VideoService videoService) {
+    public HomeController(VideoService videoService, YouTubeService youTubeService) {
         this.videoService = videoService;
+        this.youTubeService = youTubeService;
     }
 
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("videos", videoService.obtenerTodos());
+        model.addAttribute("youTubeService", youTubeService);
         // Si no hay un objeto video en el modelo (de flash attributes), crear uno nuevo
         if (!model.containsAttribute("video")) {
             model.addAttribute("video", new Video());

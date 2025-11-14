@@ -49,5 +49,18 @@ public class YouTubeService {
         }
         return String.format(EMBED_URL_TEMPLATE, videoId);
     }
+
+    /**
+     * Genera la URL del thumbnail de YouTube
+     * @param videoId ID del video de YouTube
+     * @return URL del thumbnail (alta calidad)
+     */
+    public String generarThumbnailUrl(String videoId) {
+        if (videoId == null || videoId.trim().isEmpty()) {
+            return null;
+        }
+        // maxresdefault es la mejor calidad disponible
+        return String.format("https://img.youtube.com/vi/%s/maxresdefault.jpg", videoId);
+    }
 }
 

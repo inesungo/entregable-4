@@ -50,6 +50,11 @@ public class VideoService {
         video.setYoutubeId(videoId);
         video.setEmbedUrl(youTubeService.generarEmbedUrl(videoId));
 
+        // Si no tiene categoría, asignar "Música" por defecto
+        if (video.getCategoria() == null || video.getCategoria().trim().isEmpty()) {
+            video.setCategoria("Música");
+        }
+
         return videoRepository.save(video);
     }
 

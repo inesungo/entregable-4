@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface VideoRepository extends JpaRepository<Video, Long> {
     List<Video> findByEsFavoritoTrue();
+    List<Video> findByCategoria(String categoria);
 }
 
