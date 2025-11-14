@@ -51,27 +51,32 @@
             display: flex !important;
             flex-wrap: wrap !important;
             margin: 0 !important;
+            width: 100% !important;
         }
 
         .col-lg-3 {
-            flex: 0 0 auto;
-            width: 25%;
+            flex: 0 0 auto !important;
+            width: 25% !important;
+            max-width: 25% !important;
         }
 
         .col-lg-9 {
-            flex: 0 0 auto;
-            width: 75%;
+            flex: 0 0 auto !important;
+            width: 75% !important;
+            min-width: 500px !important;
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
             position: relative !important;
             z-index: 1 !important;
+            background: transparent !important;
         }
 
         /* Debug: Asegurar que el contenido principal sea visible */
         .col-lg-9 > * {
             display: block !important;
             visibility: visible !important;
+            opacity: 1 !important;
         }
 
         /* Forzar visibilidad de cards y formularios */
@@ -79,14 +84,23 @@
         .form-control,
         .btn,
         .section-tabs,
-        .section-content.active {
+        .section-content.active,
+        .stats-card {
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
+            width: 100% !important;
+            max-width: 100% !important;
         }
 
         .section-content.active {
             display: block !important;
+        }
+
+        /* Asegurar que el formulario sea visible */
+        #addVideoForm {
+            display: block !important;
+            visibility: visible !important;
         }
 
         @media (max-width: 991.98px) {
