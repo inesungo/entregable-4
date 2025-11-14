@@ -11,21 +11,31 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 2rem 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .main-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         .card {
             border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
             margin-bottom: 1.5rem;
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
         }
         .video-embed {
             position: relative;
             padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
+            border-radius: 8px;
+            background: #000;
         }
         .video-embed iframe {
             position: absolute;
@@ -33,22 +43,154 @@
             left: 0;
             width: 100%;
             height: 100%;
+            border-radius: 8px;
         }
         .btn-action {
             margin: 0.25rem;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+        .btn-action:hover {
+            transform: scale(1.05);
         }
         .favorito {
             color: #ffc107;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .badge {
+            border-radius: 12px;
+            padding: 0.35em 0.65em;
+        }
+        .video-card {
+            transition: all 0.3s ease;
+        }
+        .video-card.favorito-card {
+            border-left: 4px solid #ffc107;
+        }
+        .stats-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .filter-btn {
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .filter-btn.active {
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+        }
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        .empty-state i {
+            font-size: 5rem;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+        }
+        .header-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            backdrop-filter: blur(10px);
+        }
+        .video-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .video-meta {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .like-btn.active {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .search-box {
+            position: relative;
+        }
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        .search-box input {
+            padding-left: 45px;
         }
     </style>
 </head>
 <body>
     <div class="container main-container">
         <!-- Header -->
-        <div class="card mb-4">
+        <div class="card mb-4 header-card">
             <div class="card-body text-center">
-                <h1 class="display-4 mb-3">🎵 Playlist de Música</h1>
-                <p class="lead">Gestiona tu colección de videos musicales de YouTube</p>
+                <h1 class="display-4 mb-3">
+                    <i class="bi bi-music-note-beamed"></i> Playlist de Música
+                </h1>
+                <p class="lead text-muted">Gestiona tu colección de videos musicales de YouTube</p>
+                <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap" id="statsContainer">
+                    <div class="stats-badge">
+                        <i class="bi bi-play-circle"></i>
+                        <span id="totalVideos" th:text="${videos != null ? #lists.size(videos) : 0}">0</span> Videos
+                    </div>
+                    <div class="stats-badge" th:if="${videos != null and !videos.isEmpty()}">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <span id="totalFavoritos">0</span> Favoritos
+                    </div>
+                    <div class="stats-badge" th:if="${videos != null and !videos.isEmpty()}">
+                        <i class="bi bi-heart-fill text-danger"></i>
+                        <span id="totalLikes">0</span> Likes totales
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -62,25 +204,32 @@
 
         <!-- Formulario para agregar video -->
         <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                 <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Agregar Nuevo Video</h5>
             </div>
             <div class="card-body">
-                <form th:action="@{/videos/agregar}" th:object="${video}" method="post">
-                    <div class="row">
-                        <div class="col-md-5 mb-3">
-                            <label for="nombre" class="form-label">Nombre del Video</label>
+                <form th:action="@{/videos/agregar}" th:object="${video}" method="post" id="addVideoForm">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label for="nombre" class="form-label">
+                                <i class="bi bi-tag"></i> Nombre del Video
+                            </label>
                             <input type="text" class="form-control" id="nombre" th:field="*{nombre}" 
                                    placeholder="Ej: Mi canción favorita" required>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="link" class="form-label">URL de YouTube</label>
+                        <div class="col-md-6">
+                            <label for="link" class="form-label">
+                                <i class="bi bi-link-45deg"></i> URL de YouTube
+                            </label>
                             <input type="url" class="form-control" id="link" th:field="*{link}" 
                                    placeholder="https://www.youtube.com/watch?v=..." required>
+                            <small class="form-text text-muted">
+                                Formatos soportados: youtube.com/watch?v=, youtu.be/, youtube.com/embed/
+                            </small>
                         </div>
-                        <div class="col-md-1 mb-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="bi bi-plus-lg"></i> Agregar
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100" id="submitBtn">
+                                <i class="bi bi-plus-lg"></i>
                             </button>
                         </div>
                     </div>
@@ -88,11 +237,48 @@
             </div>
         </div>
 
+        <!-- Filtros y Búsqueda -->
+        <div th:if="${videos != null and !videos.isEmpty()}" class="mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <div class="search-box">
+                                <i class="bi bi-search"></i>
+                                <input type="text" class="form-control" id="searchInput" 
+                                       placeholder="Buscar videos por nombre...">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" id="sortSelect">
+                                <option value="recent">Más recientes</option>
+                                <option value="oldest">Más antiguos</option>
+                                <option value="likes">Más likes</option>
+                                <option value="name">Por nombre (A-Z)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-buttons mt-3">
+                        <button class="btn btn-sm filter-btn active" data-filter="all">
+                            <i class="bi bi-list-ul"></i> Todos
+                        </button>
+                        <button class="btn btn-sm filter-btn" data-filter="favorites">
+                            <i class="bi bi-star-fill"></i> Favoritos
+                        </button>
+                        <button class="btn btn-sm filter-btn" data-filter="liked">
+                            <i class="bi bi-heart-fill"></i> Con likes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Lista de Videos -->
-        <div th:if="${videos != null and !videos.isEmpty()}">
-            <h3 class="text-white mb-3">Mis Videos (<span th:text="${#lists.size(videos)}"></span>)</h3>
-            
-            <div th:each="video : ${videos}" class="card">
+        <div th:if="${videos != null and !videos.isEmpty()}" id="videosContainer">
+            <div th:each="video, iterStat : ${videos}" 
+                 class="card video-card fade-in" 
+                 th:classappend="${video.esFavorito ? 'favorito-card' : ''}"
+                 th:attr="data-video-name=${video.nombre}, data-is-favorite=${video.esFavorito}, data-likes=${video.likes}, data-date=${#temporals.format(video.fechaCreacion, 'yyyy-MM-dd HH:mm')}">
                 <div class="card-body">
                     <div class="row">
                         <!-- Video Embebido -->
@@ -108,45 +294,57 @@
                         
                         <!-- Información del Video -->
                         <div class="col-md-6">
-                            <h5 class="card-title" th:text="${video.nombre}"></h5>
-                            <p class="text-muted small mb-2">
-                                <i class="bi bi-calendar"></i> 
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="video-title mb-0" th:text="${video.nombre}"></h5>
+                                <span th:if="${video.esFavorito}" class="badge bg-warning text-dark">
+                                    <i class="bi bi-star-fill"></i> Favorito
+                                </span>
+                            </div>
+                            
+                            <p class="video-meta mb-3">
+                                <i class="bi bi-calendar3"></i> 
                                 <span th:text="${#temporals.format(video.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span>
                             </p>
                             
                             <!-- Acciones -->
-                            <div class="d-flex flex-wrap mb-3">
+                            <div class="action-buttons">
                                 <form th:action="@{/videos/like/{id}(id=${video.id})}" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-outline-primary btn-sm btn-action">
-                                        <i class="bi bi-heart"></i> Like 
-                                        <span class="badge bg-primary" th:text="${video.likes}">0</span>
+                                    <button type="submit" 
+                                            class="btn btn-outline-danger btn-sm btn-action like-btn"
+                                            th:classappend="${video.likes > 0 ? 'active' : ''}"
+                                            title="Dar like">
+                                        <i class="bi bi-heart-fill"></i> 
+                                        <span class="badge" th:text="${video.likes}">0</span>
                                     </button>
                                 </form>
                                 
                                 <form th:action="@{/videos/favorito/{id}(id=${video.id})}" method="post" class="d-inline">
                                     <button type="submit" 
                                             th:classappend="${video.esFavorito ? 'btn-warning' : 'btn-outline-warning'}"
-                                            class="btn btn-sm btn-action">
+                                            class="btn btn-sm btn-action"
+                                            th:title="${video.esFavorito ? 'Quitar de favoritos' : 'Marcar como favorito'}">
                                         <i class="bi" 
-                                           th:classappend="${video.esFavorito ? 'bi-star-fill' : 'bi-star'}"
-                                           th:class="${video.esFavorito ? 'favorito' : ''}"></i> 
-                                        Favorito
+                                           th:classappend="${video.esFavorito ? 'bi-star-fill favorito' : 'bi-star'}"></i> 
+                                        <span th:text="${video.esFavorito ? 'Favorito' : 'Favorito'}"></span>
                                     </button>
                                 </form>
+                                
+                                <a th:href="${video.link}" target="_blank" 
+                                   class="btn btn-outline-info btn-sm btn-action"
+                                   title="Abrir en YouTube">
+                                    <i class="bi bi-youtube"></i> YouTube
+                                </a>
                                 
                                 <form th:action="@{/videos/eliminar/{id}(id=${video.id})}" method="post" 
                                       onsubmit="return confirm('¿Estás seguro de eliminar este video?');"
                                       class="d-inline">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm btn-action">
-                                        <i class="bi bi-trash"></i> Eliminar
+                                    <button type="submit" 
+                                            class="btn btn-outline-danger btn-sm btn-action"
+                                            title="Eliminar video">
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
                             </div>
-                            
-                            <!-- Link original -->
-                            <a th:href="${video.link}" target="_blank" class="btn btn-link btn-sm p-0">
-                                <i class="bi bi-box-arrow-up-right"></i> Ver en YouTube
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -155,14 +353,114 @@
 
         <!-- Mensaje cuando no hay videos -->
         <div th:if="${videos == null or videos.isEmpty()}" class="card">
-            <div class="card-body text-center py-5">
-                <i class="bi bi-music-note-list display-1 text-muted"></i>
-                <h4 class="mt-3 text-muted">No hay videos en tu playlist</h4>
-                <p class="text-muted">Agrega tu primer video usando el formulario de arriba</p>
+            <div class="card-body empty-state">
+                <i class="bi bi-music-note-list text-muted"></i>
+                <h4 class="mt-3 text-muted">Tu playlist está vacía</h4>
+                <p class="text-muted mb-4">Comienza agregando tu primer video musical</p>
+                <button class="btn btn-primary" onclick="document.getElementById('nombre').focus()">
+                    <i class="bi bi-plus-circle"></i> Agregar mi primer video
+                </button>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Búsqueda en tiempo real
+        document.getElementById('searchInput')?.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const videoCards = document.querySelectorAll('.video-card');
+            
+            videoCards.forEach(card => {
+                const videoName = card.getAttribute('data-video-name').toLowerCase();
+                if (videoName.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Filtros
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Actualizar botones activos
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                const videoCards = document.querySelectorAll('.video-card');
+                
+                videoCards.forEach(card => {
+                    const isFavorite = card.getAttribute('data-is-favorite') === 'true';
+                    const likes = parseInt(card.getAttribute('data-likes'));
+                    
+                    let show = false;
+                    if (filter === 'all') show = true;
+                    else if (filter === 'favorites' && isFavorite) show = true;
+                    else if (filter === 'liked' && likes > 0) show = true;
+                    
+                    card.style.display = show ? '' : 'none';
+                });
+            });
+        });
+
+        // Ordenamiento
+        document.getElementById('sortSelect')?.addEventListener('change', function(e) {
+            const sortBy = e.target.value;
+            const container = document.getElementById('videosContainer');
+            const cards = Array.from(container.querySelectorAll('.video-card'));
+            
+            cards.sort((a, b) => {
+                if (sortBy === 'recent') {
+                    return new Date(b.getAttribute('data-date')) - new Date(a.getAttribute('data-date'));
+                } else if (sortBy === 'oldest') {
+                    return new Date(a.getAttribute('data-date')) - new Date(b.getAttribute('data-date'));
+                } else if (sortBy === 'likes') {
+                    return parseInt(b.getAttribute('data-likes')) - parseInt(a.getAttribute('data-likes'));
+                } else if (sortBy === 'name') {
+                    return a.getAttribute('data-video-name').localeCompare(b.getAttribute('data-video-name'));
+                }
+                return 0;
+            });
+            
+            cards.forEach(card => container.appendChild(card));
+        });
+
+        // Animación al enviar formulario
+        document.getElementById('addVideoForm')?.addEventListener('submit', function() {
+            const btn = document.getElementById('submitBtn');
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+            btn.disabled = true;
+        });
+
+        // Calcular estadísticas
+        function updateStats() {
+            const videoCards = document.querySelectorAll('.video-card');
+            let favoritos = 0;
+            let totalLikes = 0;
+            
+            videoCards.forEach(card => {
+                if (card.getAttribute('data-is-favorite') === 'true') favoritos++;
+                totalLikes += parseInt(card.getAttribute('data-likes') || 0);
+            });
+            
+            const favoritosEl = document.getElementById('totalFavoritos');
+            const likesEl = document.getElementById('totalLikes');
+            if (favoritosEl) favoritosEl.textContent = favoritos;
+            if (likesEl) likesEl.textContent = totalLikes;
+        }
+        
+        // Actualizar estadísticas al cargar
+        updateStats();
+
+        // Auto-ocultar alertas después de 5 segundos
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
 </body>
 </html>
