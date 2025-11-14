@@ -49,8 +49,8 @@ bin/
 *.log
 application-local.properties
 
-# H2 Database files (se agregará en fases siguientes)
-# data/
+# H2 Database files
+data/
 
 # OS
 .DS_Store

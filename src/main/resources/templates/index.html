@@ -4,41 +4,165 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playlist de Música</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
         }
-        .container {
-            text-align: center;
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        h1 {
-            color: #333;
-            margin-bottom: 1rem;
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
         }
-        p {
-            color: #666;
-            font-size: 1.2rem;
+        .video-embed {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+        .video-embed iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .btn-action {
+            margin: 0.25rem;
+        }
+        .favorito {
+            color: #ffc107;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 th:text="${mensaje}">Hola Mundo</h1>
-        <p>¡Bienvenido a la Playlist de Música!</p>
-        <p style="font-size: 0.9rem; color: #999; margin-top: 2rem;">
-            Fase 1: Hola Mundo + CI/CD ✅
-        </p>
+    <div class="container main-container">
+        <!-- Header -->
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <h1 class="display-4 mb-3">🎵 Playlist de Música</h1>
+                <p class="lead">Gestiona tu colección de videos musicales de YouTube</p>
+            </div>
+        </div>
+
+        <!-- Mensajes -->
+        <div th:if="${mensaje}" 
+             th:classappend="${tipoMensaje == 'success' ? 'alert-success' : 'alert-danger'}"
+             class="alert alert-dismissible fade show" role="alert">
+            <span th:text="${mensaje}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Formulario para agregar video -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Agregar Nuevo Video</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/videos/agregar}" th:object="${video}" method="post">
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label for="nombre" class="form-label">Nombre del Video</label>
+                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" 
+                                   placeholder="Ej: Mi canción favorita" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="link" class="form-label">URL de YouTube</label>
+                            <input type="url" class="form-control" id="link" th:field="*{link}" 
+                                   placeholder="https://www.youtube.com/watch?v=..." required>
+                        </div>
+                        <div class="col-md-1 mb-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-plus-lg"></i> Agregar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Lista de Videos -->
+        <div th:if="${videos != null and !videos.isEmpty()}">
+            <h3 class="text-white mb-3">Mis Videos (<span th:text="${#lists.size(videos)}"></span>)</h3>
+            
+            <div th:each="video : ${videos}" class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Video Embebido -->
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="video-embed" th:if="${video.embedUrl}">
+                                <iframe th:src="${video.embedUrl}" 
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
+                        
+                        <!-- Información del Video -->
+                        <div class="col-md-6">
+                            <h5 class="card-title" th:text="${video.nombre}"></h5>
+                            <p class="text-muted small mb-2">
+                                <i class="bi bi-calendar"></i> 
+                                <span th:text="${#temporals.format(video.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span>
+                            </p>
+                            
+                            <!-- Acciones -->
+                            <div class="d-flex flex-wrap mb-3">
+                                <form th:action="@{/videos/like/{id}(id=${video.id})}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm btn-action">
+                                        <i class="bi bi-heart"></i> Like 
+                                        <span class="badge bg-primary" th:text="${video.likes}">0</span>
+                                    </button>
+                                </form>
+                                
+                                <form th:action="@{/videos/favorito/{id}(id=${video.id})}" method="post" class="d-inline">
+                                    <button type="submit" 
+                                            th:classappend="${video.esFavorito ? 'btn-warning' : 'btn-outline-warning'}"
+                                            class="btn btn-sm btn-action">
+                                        <i class="bi" 
+                                           th:classappend="${video.esFavorito ? 'bi-star-fill' : 'bi-star'}"
+                                           th:class="${video.esFavorito ? 'favorito' : ''}"></i> 
+                                        Favorito
+                                    </button>
+                                </form>
+                                
+                                <form th:action="@{/videos/eliminar/{id}(id=${video.id})}" method="post" 
+                                      onsubmit="return confirm('¿Estás seguro de eliminar este video?');"
+                                      class="d-inline">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm btn-action">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <!-- Link original -->
+                            <a th:href="${video.link}" target="_blank" class="btn btn-link btn-sm p-0">
+                                <i class="bi bi-box-arrow-up-right"></i> Ver en YouTube
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje cuando no hay videos -->
+        <div th:if="${videos == null or videos.isEmpty()}" class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-music-note-list display-1 text-muted"></i>
+                <h4 class="mt-3 text-muted">No hay videos en tu playlist</h4>
+                <p class="text-muted">Agrega tu primer video usando el formulario de arriba</p>
+            </div>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

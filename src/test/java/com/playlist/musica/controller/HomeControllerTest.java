@@ -2,13 +2,15 @@ package com.playlist.musica.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(HomeController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class HomeControllerTest {
 
     @Autowired
@@ -19,7 +21,8 @@ class HomeControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
-                .andExpect(model().attributeExists("mensaje"));
+                .andExpect(model().attributeExists("videos"))
+                .andExpect(model().attributeExists("video"));
     }
 }
 
