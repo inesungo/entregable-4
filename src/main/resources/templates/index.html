@@ -718,279 +718,279 @@
 
             <!-- Contenido Principal -->
             <div class="col-lg-9">
-        <!-- Estadísticas (versión compacta para móvil) -->
-        <div class="stats-card d-lg-none mb-4">
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalVideos" th:text="${videos != null ? #lists.size(videos) : 0}">0</div>
-                        <div class="stat-label">
-                            <i class="bi bi-play-circle"></i> Videos Totales
+                <!-- Estadísticas (versión compacta para móvil) -->
+                <div class="stats-card d-lg-none mb-4">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="stat-item">
+                                <div class="stat-value" id="totalVideos" th:text="${videos != null ? #lists.size(videos) : 0}">0</div>
+                                <div class="stat-label">
+                                    <i class="bi bi-play-circle"></i> Videos Totales
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-item">
+                                <div class="stat-value" id="totalFavoritos">0</div>
+                                <div class="stat-label">
+                                    <i class="bi bi-star-fill"></i> Favoritos
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-item">
+                                <div class="stat-value" id="totalLikes">0</div>
+                                <div class="stat-label">
+                                    <i class="bi bi-heart-fill"></i> Likes Totales
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalFavoritos">0</div>
-                        <div class="stat-label">
-                            <i class="bi bi-star-fill"></i> Favoritos
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalLikes">0</div>
-                        <div class="stat-label">
-                            <i class="bi bi-heart-fill"></i> Likes Totales
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Mensajes -->
-        <div th:if="${mensaje}" 
+                <!-- Mensajes -->
+                <div th:if="${mensaje}" 
              th:classappend="${tipoMensaje == 'success' ? 'alert-success' : 'alert-danger'}"
-             class="alert alert-dismissible fade show" role="alert">
-            <i class="bi" th:classappend="${tipoMensaje == 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'}"></i>
-            <span th:text="${mensaje}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-
-        <!-- Formulario para agregar video -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="bi bi-plus-circle"></i> Agregar Nuevo Video
-            </div>
-            <div class="card-body p-4">
-                <form th:action="@{/videos/agregar}" th:object="${video}" method="post" id="addVideoForm">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label for="nombre" class="form-label fw-semibold">
-                                <i class="bi bi-tag"></i> Nombre del Video
-                            </label>
-                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" 
-                                   placeholder="Ej: Mi canción favorita" required>
-                        </div>
-                        <div class="col-md-5">
-                            <label for="link" class="form-label fw-semibold">
-                                <i class="bi bi-link-45deg"></i> URL de YouTube
-                            </label>
-                            <div class="search-box">
-                                <i class="bi bi-youtube"></i>
-                                <input type="url" class="form-control" id="link" th:field="*{link}" 
-                                       placeholder="https://www.youtube.com/watch?v=..." required>
-                            </div>
-                            <small class="text-muted">Formatos: youtube.com/watch?v=, youtu.be/, youtube.com/embed/</small>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="categoria" class="form-label fw-semibold">
-                                <i class="bi bi-bookmark"></i> Categoría
-                            </label>
-                            <select class="form-select" id="categoria" th:field="*{categoria}">
-                                <option value="Música">🎵 Música</option>
-                                <option value="Gaming">🎮 Gaming</option>
-                                <option value="Tutorial">📚 Tutorial</option>
-                                <option value="Deportes">⚽ Deportes</option>
-                                <option value="Películas">🎬 Películas</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row g-3 mt-2">
-                        <div class="col-md-11">
-                            <label for="descripcion" class="form-label fw-semibold">
-                                <i class="bi bi-card-text"></i> Descripción o Notas (opcional)
-                            </label>
-                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" 
-                                      rows="2" placeholder="Agrega una descripción o notas sobre este video..."></textarea>
-                        </div>
-                        <div class="col-md-1 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100" id="submitBtn">
-                                <i class="bi bi-plus-lg"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Secciones con Tabs -->
-        <div th:if="${videos != null and !videos.isEmpty()}">
-            <div class="section-tabs">
-                <button class="tab-btn active" data-section="all">
-                    <i class="bi bi-grid"></i> Todos los Videos
-                </button>
-                <button class="tab-btn" data-section="favorites">
-                    <i class="bi bi-star-fill"></i> Favoritos
-                </button>
-                <button class="tab-btn" data-section="popular">
-                    <i class="bi bi-heart-fill"></i> Más Populares
-                </button>
-            </div>
-
-            <!-- Búsqueda y Ordenamiento -->
-            <div class="card mb-4">
-                <div class="card-body p-3">
-                    <div class="row g-3">
-                        <div class="col-md-8">
-                            <div class="search-box">
-                                <i class="bi bi-search"></i>
-                                <input type="text" class="form-control" id="searchInput" 
-                                       placeholder="Buscar videos por nombre...">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-select" id="sortSelect">
-                                <option value="recent">Más recientes primero</option>
-                                <option value="oldest">Más antiguos primero</option>
-                                <option value="likes">Más likes primero</option>
-                                <option value="name">Orden alfabético (A-Z)</option>
-                                <option value="favorites">Favoritos primero</option>
-                            </select>
-                        </div>
-                    </div>
+                     class="alert alert-dismissible fade show" role="alert">
+                    <i class="bi" th:classappend="${tipoMensaje == 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'}"></i>
+                    <span th:text="${mensaje}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-            </div>
 
-            <!-- Sección: Todos los Videos -->
-            <div class="section-content active" id="section-all">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="bi bi-collection-play"></i> Todos los Videos
-                    </h2>
-                </div>
-                <div class="grid-layout" id="videosContainer-all">
-                    <div th:each="video : ${videos}" 
-                         class="video-card"
-                         th:classappend="${video.esFavorito ? 'favorite' : ''}"
-                         th:attr="data-video-name=${video.nombre}, data-is-favorite=${video.esFavorito}, data-likes=${video.likes}, data-date=${#temporals.format(video.fechaCreacion, 'yyyy-MM-dd HH:mm')}, data-embed-url=${video.embedUrl}, data-categoria=${video.categoria != null ? video.categoria : 'Música'}">
-                        <!-- Badges -->
-                        <div class="badge-new" 
-                             th:attr="data-created=${#temporals.format(video.fechaCreacion, 'yyyy-MM-dd HH:mm')}"
-                             style="display: none;">
-                            <i class="bi bi-star-fill"></i> Nuevo
-                        </div>
-                        <div th:if="${video.likes >= 10}" class="badge-popular">
-                            <i class="bi bi-fire"></i> Popular
-                        </div>
-                        <div th:if="${video.esFavorito}" class="favorite-badge">
-                            <i class="bi bi-star-fill"></i> Favorito
-                        </div>
-                        
-                        <!-- Thumbnail con overlay de play -->
-                        <div class="thumbnail-container mb-3" th:attr="onclick=|openVideoModal('${video.embedUrl}')|">
-                            <img th:if="${video.youtubeId != null}"
-                                 th:src="'https://img.youtube.com/vi/' + ${video.youtubeId} + '/maxresdefault.jpg'" 
-                                 th:alt="${video.nombre}"
-                                 class="video-thumbnail"
-                                 onerror="this.src='https://img.youtube.com/vi/' + this.getAttribute('data-video-id') + '/hqdefault.jpg'"
-                                 th:attr="data-video-id=${video.youtubeId}">
-                            <div class="play-overlay">
-                                <i class="bi bi-play-fill"></i>
+                <!-- Formulario para agregar video -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="bi bi-plus-circle"></i> Agregar Nuevo Video
+                    </div>
+                    <div class="card-body p-4">
+                        <form th:action="@{/videos/agregar}" th:object="${video}" method="post" id="addVideoForm">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="nombre" class="form-label fw-semibold">
+                                        <i class="bi bi-tag"></i> Nombre del Video
+                                    </label>
+                                    <input type="text" class="form-control" id="nombre" th:field="*{nombre}" 
+                                           placeholder="Ej: Mi canción favorita" required>
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="link" class="form-label fw-semibold">
+                                        <i class="bi bi-link-45deg"></i> URL de YouTube
+                                    </label>
+                                    <div class="search-box">
+                                        <i class="bi bi-youtube"></i>
+                                        <input type="url" class="form-control" id="link" th:field="*{link}" 
+                                               placeholder="https://www.youtube.com/watch?v=..." required>
+                                    </div>
+                                    <small class="text-muted">Formatos: youtube.com/watch?v=, youtu.be/, youtube.com/embed/</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="categoria" class="form-label fw-semibold">
+                                        <i class="bi bi-bookmark"></i> Categoría
+                                    </label>
+                                    <select class="form-select" id="categoria" th:field="*{categoria}">
+                                        <option value="Música">🎵 Música</option>
+                                        <option value="Gaming">🎮 Gaming</option>
+                                        <option value="Tutorial">📚 Tutorial</option>
+                                        <option value="Deportes">⚽ Deportes</option>
+                                        <option value="Películas">🎬 Películas</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <!-- Información del Video -->
-                        <div class="video-info">
-                            <h5 class="video-title" th:text="${video.nombre}"></h5>
-                            
-                            <!-- Categoría -->
-                            <div th:if="${video.categoria != null}">
-                                <span class="category-badge" 
-                                      th:classappend="'category-' + ${#strings.toLowerCase(video.categoria)}"
-                                      th:text="${video.categoria}"></span>
-                            </div>
-                            
-                            <!-- Descripción -->
-                            <p th:if="${video.descripcion != null and !#strings.isEmpty(video.descripcion)}" 
-                               class="text-muted small mt-2 mb-2" 
-                               style="font-size: 0.875rem; line-height: 1.5;"
-                               th:text="${video.descripcion}"></p>
-                            
-                            <!-- Meta información -->
-                            <div class="video-meta mb-3">
-                                <i class="bi bi-calendar3"></i>
-                                <span>Agregado: <span th:text="${#temporals.format(video.fechaCreacion, 'dd/MM/yyyy')}"></span></span>
-                            </div>
-                            
-                            <!-- Botones de acción -->
-                            <div class="action-buttons">
-                                <form th:action="@{/videos/like/{id}(id=${video.id})}" method="post" class="d-inline">
-                                    <button type="submit" 
-                                            class="btn btn-like btn-sm"
-                                            th:classappend="${video.likes > 0 ? 'active' : ''}"
-                                            title="Dar like">
-                                        <i class="bi bi-heart-fill"></i>
-                                        <span class="badge badge-primary" th:text="${video.likes}">0</span>
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-11">
+                                    <label for="descripcion" class="form-label fw-semibold">
+                                        <i class="bi bi-card-text"></i> Descripción o Notas (opcional)
+                                    </label>
+                                    <textarea class="form-control" id="descripcion" th:field="*{descripcion}" 
+                                              rows="2" placeholder="Agrega una descripción o notas sobre este video..."></textarea>
+                                </div>
+                                <div class="col-md-1 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100" id="submitBtn">
+                                        <i class="bi bi-plus-lg"></i>
                                     </button>
-                                </form>
-                                <form th:action="@{/videos/favorito/{id}(id=${video.id})}" method="post" class="d-inline">
-                                    <button type="submit" 
-                                            class="btn btn-favorite btn-sm"
-                                            th:classappend="${video.esFavorito ? 'active' : ''}"
-                                            th:title="${video.esFavorito ? 'Quitar de favoritos' : 'Marcar como favorito'}">
-                                        <i class="bi" th:classappend="${video.esFavorito ? 'bi-star-fill pulse' : 'bi-star'}"></i>
-                                    </button>
-                                </form>
-                                <button type="button" 
-                                        class="btn btn-outline-primary btn-sm btn-copy"
-                                        th:attr="onclick=|copyToClipboard('${video.link}')|"
-                                        title="Copiar link">
-                                    <span class="copy-tooltip">¡Copiado!</span>
-                                    <i class="bi bi-link-45deg"></i>
-                                </button>
-                                <a th:href="${video.link}" target="_blank" class="btn btn-outline-primary btn-sm" title="Abrir en YouTube">
-                                    <i class="bi bi-youtube"></i>
-                                </a>
-                                <form th:action="@{/videos/eliminar/{id}(id=${video.id})}" method="post" 
-                                      onsubmit="return confirm('¿Estás seguro de eliminar este video?');"
-                                      class="d-inline">
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Eliminar video">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Secciones con Tabs -->
+                <div th:if="${videos != null and !videos.isEmpty()}">
+                    <div class="section-tabs">
+                        <button class="tab-btn active" data-section="all">
+                            <i class="bi bi-grid"></i> Todos los Videos
+                        </button>
+                        <button class="tab-btn" data-section="favorites">
+                            <i class="bi bi-star-fill"></i> Favoritos
+                        </button>
+                        <button class="tab-btn" data-section="popular">
+                            <i class="bi bi-heart-fill"></i> Más Populares
+                        </button>
+                    </div>
+
+                    <!-- Búsqueda y Ordenamiento -->
+                    <div class="card mb-4">
+                        <div class="card-body p-3">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <div class="search-box">
+                                        <i class="bi bi-search"></i>
+                                        <input type="text" class="form-control" id="searchInput" 
+                                               placeholder="Buscar videos por nombre...">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select" id="sortSelect">
+                                        <option value="recent">Más recientes primero</option>
+                                        <option value="oldest">Más antiguos primero</option>
+                                        <option value="likes">Más likes primero</option>
+                                        <option value="name">Orden alfabético (A-Z)</option>
+                                        <option value="favorites">Favoritos primero</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Sección: Favoritos -->
-            <div class="section-content" id="section-favorites">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="bi bi-star-fill"></i> Videos Favoritos
-                    </h2>
-                </div>
-                <div class="grid-layout" id="videosContainer-favorites">
-                    <!-- Se llena dinámicamente con JavaScript -->
-                </div>
-            </div>
+                    <!-- Sección: Todos los Videos -->
+                    <div class="section-content active" id="section-all">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="bi bi-collection-play"></i> Todos los Videos
+                            </h2>
+                        </div>
+                        <div class="grid-layout" id="videosContainer-all">
+                            <div th:each="video : ${videos}" 
+                                 class="video-card"
+                                 th:classappend="${video.esFavorito ? 'favorite' : ''}"
+                                 th:attr="data-video-name=${video.nombre}, data-is-favorite=${video.esFavorito}, data-likes=${video.likes}, data-date=${#temporals.format(video.fechaCreacion, 'yyyy-MM-dd HH:mm')}, data-embed-url=${video.embedUrl}, data-categoria=${video.categoria != null ? video.categoria : 'Música'}">
+                                <!-- Badges -->
+                                <div class="badge-new" 
+                                     th:attr="data-created=${#temporals.format(video.fechaCreacion, 'yyyy-MM-dd HH:mm')}"
+                                     style="display: none;">
+                                    <i class="bi bi-star-fill"></i> Nuevo
+                                </div>
+                                <div th:if="${video.likes >= 10}" class="badge-popular">
+                                    <i class="bi bi-fire"></i> Popular
+                                </div>
+                                <div th:if="${video.esFavorito}" class="favorite-badge">
+                                    <i class="bi bi-star-fill"></i> Favorito
+                                </div>
+                                
+                                <!-- Thumbnail con overlay de play -->
+                                <div class="thumbnail-container mb-3" th:attr="onclick=|openVideoModal('${video.embedUrl}')|">
+                                    <img th:if="${video.youtubeId != null}"
+                                         th:src="'https://img.youtube.com/vi/' + ${video.youtubeId} + '/maxresdefault.jpg'" 
+                                         th:alt="${video.nombre}"
+                                         class="video-thumbnail"
+                                         onerror="this.src='https://img.youtube.com/vi/' + this.getAttribute('data-video-id') + '/hqdefault.jpg'"
+                                         th:attr="data-video-id=${video.youtubeId}">
+                                    <div class="play-overlay">
+                                        <i class="bi bi-play-fill"></i>
+                                    </div>
+                                </div>
+                                
+                                <!-- Información del Video -->
+                                <div class="video-info">
+                                    <h5 class="video-title" th:text="${video.nombre}"></h5>
+                                    
+                                    <!-- Categoría -->
+                                    <div th:if="${video.categoria != null}">
+                                        <span class="category-badge" 
+                                              th:classappend="'category-' + ${#strings.toLowerCase(video.categoria)}"
+                                              th:text="${video.categoria}"></span>
+                                    </div>
+                                    
+                                    <!-- Descripción -->
+                                    <p th:if="${video.descripcion != null and !#strings.isEmpty(video.descripcion)}" 
+                                       class="text-muted small mt-2 mb-2" 
+                                       style="font-size: 0.875rem; line-height: 1.5;"
+                                       th:text="${video.descripcion}"></p>
+                                    
+                                    <!-- Meta información -->
+                                    <div class="video-meta mb-3">
+                                        <i class="bi bi-calendar3"></i>
+                                        <span>Agregado: <span th:text="${#temporals.format(video.fechaCreacion, 'dd/MM/yyyy')}"></span></span>
+                                    </div>
+                                    
+                                    <!-- Botones de acción -->
+                                    <div class="action-buttons">
+                                        <form th:action="@{/videos/like/{id}(id=${video.id})}" method="post" class="d-inline">
+                                            <button type="submit" 
+                                                    class="btn btn-like btn-sm"
+                                                    th:classappend="${video.likes > 0 ? 'active' : ''}"
+                                                    title="Dar like">
+                                                <i class="bi bi-heart-fill"></i>
+                                                <span class="badge badge-primary" th:text="${video.likes}">0</span>
+                                            </button>
+                                        </form>
+                                        <form th:action="@{/videos/favorito/{id}(id=${video.id})}" method="post" class="d-inline">
+                                            <button type="submit" 
+                                                    class="btn btn-favorite btn-sm"
+                                                    th:classappend="${video.esFavorito ? 'active' : ''}"
+                                                    th:title="${video.esFavorito ? 'Quitar de favoritos' : 'Marcar como favorito'}">
+                                                <i class="bi" th:classappend="${video.esFavorito ? 'bi-star-fill pulse' : 'bi-star'}"></i>
+                                            </button>
+                                        </form>
+                                        <button type="button" 
+                                                class="btn btn-outline-primary btn-sm btn-copy"
+                                                th:attr="onclick=|copyToClipboard('${video.link}')|"
+                                                title="Copiar link">
+                                            <span class="copy-tooltip">¡Copiado!</span>
+                                            <i class="bi bi-link-45deg"></i>
+                                        </button>
+                                        <a th:href="${video.link}" target="_blank" class="btn btn-outline-primary btn-sm" title="Abrir en YouTube">
+                                            <i class="bi bi-youtube"></i>
+                                        </a>
+                                        <form th:action="@{/videos/eliminar/{id}(id=${video.id})}" method="post" 
+                                              onsubmit="return confirm('¿Estás seguro de eliminar este video?');"
+                                              class="d-inline">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar video">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Sección: Más Populares -->
-            <div class="section-content" id="section-popular">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="bi bi-heart-fill"></i> Videos Más Populares
-                    </h2>
-                </div>
-                <div class="grid-layout" id="videosContainer-popular">
-                    <!-- Se llena dinámicamente con JavaScript -->
-                </div>
-            </div>
-        </div>
+                    <!-- Sección: Favoritos -->
+                    <div class="section-content" id="section-favorites">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="bi bi-star-fill"></i> Videos Favoritos
+                            </h2>
+                        </div>
+                        <div class="grid-layout" id="videosContainer-favorites">
+                            <!-- Se llena dinámicamente con JavaScript -->
+                        </div>
+                    </div>
 
-        <!-- Mensaje cuando no hay videos -->
-        <div th:if="${videos == null or videos.isEmpty()}" class="card">
-            <div class="card-body empty-state">
-                <i class="bi bi-music-note-list"></i>
-                <h4>Tu playlist está vacía</h4>
-                <p>Comienza agregando tu primer video musical</p>
-                <button class="btn btn-primary mt-3" onclick="document.getElementById('nombre').focus()">
-                    <i class="bi bi-plus-circle"></i> Agregar mi primer video
-                </button>
-            </div>
-        </div>
+                    <!-- Sección: Más Populares -->
+                    <div class="section-content" id="section-popular">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="bi bi-heart-fill"></i> Videos Más Populares
+                            </h2>
+                        </div>
+                        <div class="grid-layout" id="videosContainer-popular">
+                            <!-- Se llena dinámicamente con JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensaje cuando no hay videos -->
+                <div th:if="${videos == null or videos.isEmpty()}" class="card">
+                    <div class="card-body empty-state">
+                        <i class="bi bi-music-note-list"></i>
+                        <h4>Tu playlist está vacía</h4>
+                        <p>Comienza agregando tu primer video musical</p>
+                        <button class="btn btn-primary mt-3" onclick="document.getElementById('nombre').focus()">
+                            <i class="bi bi-plus-circle"></i> Agregar mi primer video
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
