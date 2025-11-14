@@ -21,7 +21,10 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("videos", videoService.obtenerTodos());
-        model.addAttribute("video", new Video());
+        // Si no hay un objeto video en el modelo (de flash attributes), crear uno nuevo
+        if (!model.containsAttribute("video")) {
+            model.addAttribute("video", new Video());
+        }
         return "index";
     }
 
@@ -34,6 +37,7 @@ public class HomeController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("mensaje", "Error: " + e.getMessage());
             redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
+            redirectAttributes.addFlashAttribute("video", video); // Mantener valores del formulario
         }
         return "redirect:/";
     }
