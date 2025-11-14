@@ -64,6 +64,29 @@
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
+            position: relative !important;
+            z-index: 1 !important;
+        }
+
+        /* Debug: Asegurar que el contenido principal sea visible */
+        .col-lg-9 > * {
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        /* Forzar visibilidad de cards y formularios */
+        .card,
+        .form-control,
+        .btn,
+        .section-tabs,
+        .section-content.active {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .section-content.active {
+            display: block !important;
         }
 
         @media (max-width: 991.98px) {
