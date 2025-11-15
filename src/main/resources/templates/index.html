@@ -3,621 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Playlist de Música - Gestor Profesional</title>
+    <title>Playlist Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #2563eb;
-            --primary-dark: #1e40af;
-            --secondary-color: #64748b;
-            --accent-color: #f59e0b;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-            min-height: 100vh;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            color: var(--text-primary);
-            padding: 0;
-        }
-
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: var(--shadow-md);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--primary-color) !important;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .main-container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
-
-        .stats-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 2rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 1rem;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            background: #f8fafc;
-            transform: translateY(-2px);
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            box-shadow: var(--shadow-md);
-            margin-bottom: 1.5rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--primary-color);
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 1.25rem 1.5rem;
-            font-weight: 600;
-            border: none;
-        }
-
-        .section-tabs {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 0.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-color);
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            flex: 1;
-            min-width: 120px;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            font-weight: 600;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .tab-btn:hover {
-            background: #f1f5f9;
-            color: var(--primary-color);
-        }
-
-        .tab-btn.active {
-            background: var(--primary-color);
-            color: white;
-            box-shadow: var(--shadow-md);
-        }
-
-        .section-content {
-            display: none;
-        }
-
-        .section-content.active {
-            display: block;
-            animation: fadeIn 0.4s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .video-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .video-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary-color);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
-        }
-
-        .video-card:hover::before {
-            transform: scaleY(1);
-        }
-
-        .video-card.favorite::before {
-            background: var(--accent-color);
-            transform: scaleY(1);
-        }
-
-        .video-embed {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 12px;
-            background: #000;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .video-embed iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 12px;
-        }
-
-        .video-info {
-            padding: 1rem 0;
-        }
-
-        .video-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
-        }
-
-        .video-meta {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            border-radius: 10px;
-            padding: 0.625rem 1.25rem;
-            font-weight: 600;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-outline-primary {
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            background: transparent;
-        }
-
-        .btn-outline-primary:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-like {
-            border: 2px solid var(--danger-color);
-            color: var(--danger-color);
-            background: transparent;
-        }
-
-        .btn-like:hover,
-        .btn-like.active {
-            background: var(--danger-color);
-            color: white;
-        }
-
-        .btn-favorite {
-            border: 2px solid var(--accent-color);
-            color: var(--accent-color);
-            background: transparent;
-        }
-
-        .btn-favorite:hover,
-        .btn-favorite.active {
-            background: var(--accent-color);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger-color);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-            transform: translateY(-2px);
-        }
-
-        .badge {
-            padding: 0.35em 0.65em;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.75rem;
-        }
-
-        .badge-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .badge-warning {
-            background: var(--accent-color);
-            color: white;
-        }
-
-        .form-control {
-            border-radius: 10px;
-            border: 2px solid var(--border-color);
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-            outline: none;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-        }
-
-        .search-box input {
-            padding-left: 3rem;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            color: var(--text-secondary);
-            opacity: 0.5;
-            margin-bottom: 1rem;
-        }
-
-        .empty-state h4 {
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .empty-state p {
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        .alert {
-            border-radius: 12px;
-            border: none;
-            box-shadow: var(--shadow-md);
-        }
-
-        .favorite-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--accent-color);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            box-shadow: var(--shadow-md);
-            z-index: 10;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 768px) {
-            .grid-layout {
-                grid-template-columns: 1fr;
-            }
-            
-            .section-tabs {
-                flex-direction: column;
-            }
-            
-            .tab-btn {
-                width: 100%;
-            }
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.7;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="container-fluid main-container" style="padding: 0 1rem;">
-            <div class="navbar-brand">
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <a href="/" class="logo">
                 <i class="bi bi-music-note-beamed"></i>
                 <span>Playlist Manager</span>
+            </a>
             </div>
-        </div>
-    </nav>
+    </header>
 
-    <div class="main-container">
-        <!-- Estadísticas -->
-        <div class="stats-card">
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="stat-item">
+    <div class="container-main">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
                         <div class="stat-value" id="totalVideos" th:text="${videos != null ? #lists.size(videos) : 0}">0</div>
-                        <div class="stat-label">
-                            <i class="bi bi-play-circle"></i> Videos Totales
+                <div class="stat-label">Videos Totales</div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="stat-item">
+            <div class="stat-card">
                         <div class="stat-value" id="totalFavoritos">0</div>
-                        <div class="stat-label">
-                            <i class="bi bi-star-fill"></i> Favoritos
+                <div class="stat-label">Favoritos</div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="stat-item">
+            <div class="stat-card">
                         <div class="stat-value" id="totalLikes">0</div>
-                        <div class="stat-label">
-                            <i class="bi bi-heart-fill"></i> Likes Totales
-                        </div>
-                    </div>
-                </div>
+                <div class="stat-label">Likes Totales</div>
             </div>
         </div>
 
-        <!-- Mensajes -->
+        <!-- Alertas -->
         <div th:if="${mensaje}" 
              th:classappend="${tipoMensaje == 'success' ? 'alert-success' : 'alert-danger'}"
-             class="alert alert-dismissible fade show" role="alert">
+             class="alert">
             <i class="bi" th:classappend="${tipoMensaje == 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'}"></i>
             <span th:text="${mensaje}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <!-- Formulario para agregar video -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="bi bi-plus-circle"></i> Agregar Nuevo Video
-            </div>
-            <div class="card-body p-4">
+        <!-- Formulario Agregar Video -->
+        <div class="form-section">
+            <h2 class="form-title">
+                <i class="bi bi-plus-circle"></i>
+                Agregar Nuevo Video
+            </h2>
                 <form th:action="@{/videos/agregar}" th:object="${video}" method="post" id="addVideoForm">
                     <div class="row g-3">
-                        <div class="col-md-5">
-                            <label for="nombre" class="form-label fw-semibold">
-                                <i class="bi bi-tag"></i> Nombre del Video
-                            </label>
-                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" 
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="nombre" class="form-label">Nombre del Video</label>
+                            <input type="text" class="form-input" id="nombre" th:field="*{nombre}" 
                                    placeholder="Ej: Mi canción favorita" required>
                         </div>
-                        <div class="col-md-6">
-                            <label for="link" class="form-label fw-semibold">
-                                <i class="bi bi-link-45deg"></i> URL de YouTube
-                            </label>
-                            <div class="search-box">
-                                <i class="bi bi-youtube"></i>
-                                <input type="url" class="form-control" id="link" th:field="*{link}" 
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="link" class="form-label">URL de YouTube</label>
+                            <input type="url" class="form-input" id="link" th:field="*{link}" 
                                        placeholder="https://www.youtube.com/watch?v=..." required>
                             </div>
-                            <small class="text-muted">Formatos: youtube.com/watch?v=, youtu.be/, youtube.com/embed/</small>
                         </div>
-                        <div class="col-md-1 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100" id="submitBtn">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="categoria" class="form-label">Género Musical</label>
+                            <select class="form-input" id="categoria" th:field="*{categoria}">
+                                <option value="">Seleccionar género</option>
+                                <option value="Pop">Pop</option>
+                                <option value="Rock">Rock</option>
+                                <option value="Urbano">Urbano</option>
+                                <option value="Cumbia">Cumbia</option>
+                                <option value="Clásica">Clásica</option>
+                                <option value="Trap">Trap</option>
+                                <option value="Reggaeton">Reggaeton</option>
+                                <option value="Hip Hop">Hip Hop</option>
+                                <option value="Jazz">Jazz</option>
+                                <option value="Blues">Blues</option>
+                                <option value="Country">Country</option>
+                                <option value="Electrónica">Electrónica</option>
+                                <option value="Metal">Metal</option>
+                                <option value="Indie">Indie</option>
+                                <option value="R&B">R&B</option>
+                                <option value="Salsa">Salsa</option>
+                                <option value="Bachata">Bachata</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label class="form-label" style="opacity: 0; pointer-events: none; user-select: none;">Agregar</label>
+                                <button type="submit" class="btn btn-primary btn-icon-only w-100" id="submitBtn">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
+                            </div>
                         </div>
                     </div>
                 </form>
-            </div>
         </div>
 
-        <!-- Secciones con Tabs -->
+        <!-- Contenido Principal -->
         <div th:if="${videos != null and !videos.isEmpty()}">
-            <div class="section-tabs">
+            <!-- Tabs -->
+            <div class="tabs-container">
                 <button class="tab-btn active" data-section="all">
-                    <i class="bi bi-grid"></i> Todos los Videos
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    <span>Todos</span>
                 </button>
                 <button class="tab-btn" data-section="favorites">
-                    <i class="bi bi-star-fill"></i> Favoritos
+                    <i class="bi bi-star-fill"></i>
+                    <span>Favoritos</span>
                 </button>
                 <button class="tab-btn" data-section="popular">
-                    <i class="bi bi-heart-fill"></i> Más Populares
+                    <i class="bi bi-heart-fill"></i>
+                    <span>Populares</span>
                 </button>
             </div>
 
-            <!-- Búsqueda y Ordenamiento -->
-            <div class="card mb-4">
-                <div class="card-body p-3">
+            <!-- Búsqueda -->
+            <div class="search-container">
                     <div class="row g-3">
-                        <div class="col-md-8">
-                            <div class="search-box">
-                                <i class="bi bi-search"></i>
-                                <input type="text" class="form-control" id="searchInput" 
-                                       placeholder="Buscar videos por nombre...">
+                    <div class="col-md-5">
+                        <div class="search-wrapper">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text" class="search-input" id="searchInput" 
+                                   placeholder="Buscar videos...">
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <select class="form-select" id="sortSelect">
-                                <option value="recent">Más recientes primero</option>
-                                <option value="oldest">Más antiguos primero</option>
-                                <option value="likes">Más likes primero</option>
-                                <option value="name">Orden alfabético (A-Z)</option>
-                            </select>
+                    <div class="col-md-3">
+                        <select class="form-input" id="categoryFilter">
+                            <option value="">Todos los géneros</option>
+                            <option value="Pop">Pop</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Urbano">Urbano</option>
+                            <option value="Cumbia">Cumbia</option>
+                            <option value="Clásica">Clásica</option>
+                            <option value="Trap">Trap</option>
+                            <option value="Reggaeton">Reggaeton</option>
+                            <option value="Hip Hop">Hip Hop</option>
+                            <option value="Jazz">Jazz</option>
+                            <option value="Blues">Blues</option>
+                            <option value="Country">Country</option>
+                            <option value="Electrónica">Electrónica</option>
+                            <option value="Metal">Metal</option>
+                            <option value="Indie">Indie</option>
+                            <option value="R&B">R&B</option>
+                            <option value="Salsa">Salsa</option>
+                            <option value="Bachata">Bachata</option>
+                            <option value="Otro">Otro</option>
+                        </select>
                         </div>
+                        <div class="col-md-4">
+                        <select class="form-input" id="sortSelect">
+                            <option value="recent">Más recientes</option>
+                            <option value="oldest">Más antiguos</option>
+                            <option value="likes">Más likes</option>
+                            <option value="name">A-Z</option>
+                            </select>
                     </div>
                 </div>
             </div>
 
-            <!-- Sección: Todos los Videos -->
+            <!-- Sección: Todos -->
             <div class="section-content active" id="section-all">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="bi bi-collection-play"></i> Todos los Videos
-                    </h2>
-                </div>
-                <div class="grid-layout" id="videosContainer-all">
+                <div class="videos-grid" id="videosContainer-all">
                     <div th:each="video : ${videos}" 
-                         class="video-card"
+                         class="video-item"
                          th:classappend="${video.esFavorito ? 'favorite' : ''}"
-                         th:attr="data-video-name=${video.nombre}, data-is-favorite=${video.esFavorito}, data-likes=${video.likes}, data-date=${#temporals.format(video.fechaCreacion, 'yyyy-MM-dd HH:mm')}">
-                        <div th:if="${video.esFavorito}" class="favorite-badge">
-                            <i class="bi bi-star-fill"></i> Favorito
+                         th:attr="data-video-name=${video.nombre}, data-is-favorite=${video.esFavorito}, data-likes=${video.likes}, data-date=${#temporals.format(video.fechaCreacion, 'yyyy-MM-dd HH:mm')}, data-categoria=${video.categoria != null ? video.categoria : ''}">
+                        <div class="video-thumb">
+                            <div th:if="${video.esFavorito}" class="favorite-tag">
+                                <i class="bi bi-star-fill"></i>
+                                <span>Favorito</span>
                         </div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="video-embed" th:if="${video.embedUrl}">
+                            <div th:if="${video.embedUrl}">
                                     <iframe th:src="${video.embedUrl}" 
                                             frameborder="0" 
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -625,44 +189,54 @@
                                     </iframe>
                                 </div>
                             </div>
-                            <div class="col-md-6">
                                 <div class="video-info">
-                                    <h5 class="video-title" th:text="${video.nombre}"></h5>
+                            <h3 class="video-name" th:text="${video.nombre}"></h3>
                                     <div class="video-meta">
-                                        <i class="bi bi-calendar3"></i>
-                                        <span th:text="${#temporals.format(video.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span>
+                                <span><i class="bi bi-calendar3"></i> <span th:text="${#temporals.format(video.fechaCreacion, 'dd/MM/yyyy')}"></span></span>
+                                <span><i class="bi bi-clock"></i> <span th:text="${#temporals.format(video.fechaCreacion, 'HH:mm')}"></span></span>
+                                <span th:if="${video.categoria != null and !video.categoria.isEmpty()}" class="genre-badge" th:text="${video.categoria}"></span>
                                     </div>
-                                    <div class="action-buttons">
-                                        <form th:action="@{/videos/like/{id}(id=${video.id})}" method="post" class="d-inline">
+                            <div class="video-actions">
+                                <button type="button" 
+                                        class="action-btn btn-expand"
+                                        th:data-embed-url="${video.embedUrl}"
+                                        th:data-video-name="${video.nombre}"
+                                        onclick="openVideoModal(this.getAttribute('data-embed-url'), this.getAttribute('data-video-name'))"
+                                        title="Ver en pantalla completa">
+                                    <i class="bi bi-arrows-fullscreen"></i>
+                                </button>
+                                <button type="button" 
+                                        class="action-btn btn-copy"
+                                        th:data-video-link="${video.link}"
+                                        onclick="copyVideoLink(this.getAttribute('data-video-link'))"
+                                        title="Copiar link">
+                                    <i class="bi bi-link-45deg"></i>
+                                </button>
+                                <form th:action="@{/videos/like/{id}(id=${video.id})}" method="post" class="d-inline" style="flex: 1;">
                                             <button type="submit" 
-                                                    class="btn btn-like"
-                                                    th:classappend="${video.likes > 0 ? 'active' : ''}"
-                                                    title="Dar like">
+                                            class="action-btn btn-like"
+                                            th:classappend="${video.likes > 0 ? 'active' : ''}">
                                                 <i class="bi bi-heart-fill"></i>
-                                                <span class="badge badge-primary" th:text="${video.likes}">0</span>
+                                        <span th:text="${video.likes}">0</span>
                                             </button>
                                         </form>
-                                        <form th:action="@{/videos/favorito/{id}(id=${video.id})}" method="post" class="d-inline">
+                                <form th:action="@{/videos/favorito/{id}(id=${video.id})}" method="post" class="d-inline" style="flex: 1;">
                                             <button type="submit" 
-                                                    class="btn btn-favorite"
-                                                    th:classappend="${video.esFavorito ? 'active' : ''}"
-                                                    th:title="${video.esFavorito ? 'Quitar de favoritos' : 'Marcar como favorito'}">
-                                                <i class="bi" th:classappend="${video.esFavorito ? 'bi-star-fill pulse' : 'bi-star'}"></i>
-                                                Favorito
+                                            class="action-btn btn-fav"
+                                            th:classappend="${video.esFavorito ? 'active' : ''}">
+                                        <i class="bi" th:classappend="${video.esFavorito ? 'bi-star-fill' : 'bi-star'}"></i>
                                             </button>
                                         </form>
-                                        <a th:href="${video.link}" target="_blank" class="btn btn-outline-primary" title="Abrir en YouTube">
-                                            <i class="bi bi-youtube"></i> YouTube
+                                <a th:href="${video.link}" target="_blank" class="action-btn btn-youtube" style="flex: 1;">
+                                    <i class="bi bi-youtube"></i>
                                         </a>
                                         <form th:action="@{/videos/eliminar/{id}(id=${video.id})}" method="post" 
-                                              onsubmit="return confirm('¿Estás seguro de eliminar este video?');"
-                                              class="d-inline">
-                                            <button type="submit" class="btn btn-danger" title="Eliminar video">
+                                      class="d-inline delete-form" style="flex: 1;"
+                                      th:attr="data-video-name=${video.nombre}">
+                                    <button type="button" class="action-btn btn-delete" onclick="showConfirmDelete(this)">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -671,160 +245,70 @@
 
             <!-- Sección: Favoritos -->
             <div class="section-content" id="section-favorites">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="bi bi-star-fill"></i> Videos Favoritos
-                    </h2>
+                <div class="videos-grid" id="videosContainer-favorites"></div>
                 </div>
-                <div class="grid-layout" id="videosContainer-favorites">
-                    <!-- Se llena dinámicamente con JavaScript -->
+
+            <!-- Sección: Populares -->
+            <div class="section-content" id="section-popular">
+                <div class="videos-grid" id="videosContainer-popular"></div>
                 </div>
             </div>
 
-            <!-- Sección: Más Populares -->
-            <div class="section-content" id="section-popular">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="bi bi-heart-fill"></i> Videos Más Populares
-                    </h2>
+        <!-- Empty State -->
+        <div th:if="${videos == null or videos.isEmpty()}" class="empty-state">
+                <i class="bi bi-music-note-list"></i>
+            <h3>Tu playlist está vacía</h3>
+                <p>Comienza agregando tu primer video musical</p>
+            <button class="btn btn-primary" onclick="document.getElementById('nombre').focus()">
+                <i class="bi bi-plus-circle"></i>
+                Agregar mi primer video
+                </button>
                 </div>
-                <div class="grid-layout" id="videosContainer-popular">
-                    <!-- Se llena dinámicamente con JavaScript -->
+                </div>
+
+    <!-- Modal para Video -->
+    <div class="video-modal" id="videoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle"></h3>
+                <button class="modal-close" onclick="closeVideoModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-video-container">
+                    <iframe id="modalVideo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
                 </div>
             </div>
         </div>
 
-        <!-- Mensaje cuando no hay videos -->
-        <div th:if="${videos == null or videos.isEmpty()}" class="card">
-            <div class="card-body empty-state">
-                <i class="bi bi-music-note-list"></i>
-                <h4>Tu playlist está vacía</h4>
-                <p>Comienza agregando tu primer video musical</p>
-                <button class="btn btn-primary mt-3" onclick="document.getElementById('nombre').focus()">
-                    <i class="bi bi-plus-circle"></i> Agregar mi primer video
+    <!-- Modal de Confirmación -->
+    <div class="confirm-modal" id="confirmModal">
+        <div class="confirm-dialog">
+            <div class="confirm-header">
+                <div class="confirm-icon">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <h3 class="confirm-title">¿Eliminar video?</h3>
+                <p class="confirm-message" id="confirmMessage">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="confirm-body">
+                <div class="confirm-actions">
+                    <button type="button" class="confirm-btn confirm-btn-cancel" onclick="closeConfirmModal()">
+                        <i class="bi bi-x-circle"></i>
+                        <span>Cancelar</span>
+                    </button>
+                    <button type="button" class="confirm-btn confirm-btn-confirm" id="confirmDeleteBtn">
+                        <i class="bi bi-trash-fill"></i>
+                        <span>Eliminar</span>
                 </button>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Calcular estadísticas
-        function updateStats() {
-            const videoCards = document.querySelectorAll('.video-card');
-            let favoritos = 0;
-            let totalLikes = 0;
-            
-            videoCards.forEach(card => {
-                if (card.getAttribute('data-is-favorite') === 'true') favoritos++;
-                totalLikes += parseInt(card.getAttribute('data-likes') || 0);
-            });
-            
-            const favoritosEl = document.getElementById('totalFavoritos');
-            const likesEl = document.getElementById('totalLikes');
-            if (favoritosEl) favoritosEl.textContent = favoritos;
-            if (likesEl) likesEl.textContent = totalLikes;
-        }
-
-        // Sistema de tabs
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const section = this.getAttribute('data-section');
-                
-                // Actualizar botones activos
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Mostrar sección correspondiente
-                document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
-                document.getElementById(`section-${section}`).classList.add('active');
-                
-                // Actualizar contenido de secciones
-                updateSectionContent(section);
-            });
-        });
-
-        // Actualizar contenido de secciones
-        function updateSectionContent(section) {
-            const allCards = Array.from(document.querySelectorAll('#videosContainer-all .video-card'));
-            const container = document.getElementById(`videosContainer-${section}`);
-            
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            let filteredCards = [];
-            
-            if (section === 'favorites') {
-                filteredCards = allCards.filter(card => card.getAttribute('data-is-favorite') === 'true');
-            } else if (section === 'popular') {
-                filteredCards = [...allCards]
-                    .filter(card => parseInt(card.getAttribute('data-likes')) > 0)
-                    .sort((a, b) => parseInt(b.getAttribute('data-likes')) - parseInt(a.getAttribute('data-likes')));
-            } else {
-                filteredCards = allCards;
-            }
-            
-            filteredCards.forEach(card => {
-                const clone = card.cloneNode(true);
-                container.appendChild(clone);
-            });
-        }
-
-        // Búsqueda en tiempo real
-        document.getElementById('searchInput')?.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const activeSection = document.querySelector('.section-content.active');
-            const videoCards = activeSection.querySelectorAll('.video-card');
-            
-            videoCards.forEach(card => {
-                const videoName = card.getAttribute('data-video-name').toLowerCase();
-                card.style.display = videoName.includes(searchTerm) ? '' : 'none';
-            });
-        });
-
-        // Ordenamiento
-        document.getElementById('sortSelect')?.addEventListener('change', function(e) {
-            const sortBy = e.target.value;
-            const activeSection = document.querySelector('.section-content.active');
-            const container = activeSection.querySelector('.grid-layout');
-            const cards = Array.from(container.querySelectorAll('.video-card'));
-            
-            cards.sort((a, b) => {
-                if (sortBy === 'recent') {
-                    return new Date(b.getAttribute('data-date')) - new Date(a.getAttribute('data-date'));
-                } else if (sortBy === 'oldest') {
-                    return new Date(a.getAttribute('data-date')) - new Date(b.getAttribute('data-date'));
-                } else if (sortBy === 'likes') {
-                    return parseInt(b.getAttribute('data-likes')) - parseInt(a.getAttribute('data-likes'));
-                } else if (sortBy === 'name') {
-                    return a.getAttribute('data-video-name').localeCompare(b.getAttribute('data-video-name'));
-                }
-                return 0;
-            });
-            
-            cards.forEach(card => container.appendChild(card));
-        });
-
-        // Animación al enviar formulario
-        document.getElementById('addVideoForm')?.addEventListener('submit', function() {
-            const btn = document.getElementById('submitBtn');
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-            btn.disabled = true;
-        });
-
-        // Auto-ocultar alertas
-        setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(alert => {
-                const bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            });
-        }, 5000);
-
-        // Inicializar
-        updateStats();
-        updateSectionContent('favorites');
-        updateSectionContent('popular');
-    </script>
+    <script th:src="@{/js/app.js}"></script>
 </body>
 </html>
