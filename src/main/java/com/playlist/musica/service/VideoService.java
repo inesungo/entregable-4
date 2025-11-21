@@ -65,12 +65,17 @@ public class VideoService {
         videoRepository.deleteById(id);
     }
 
+
+
+    
+
     /**
      * Incrementa los likes de un video
      */
     public Video darLike(Long id) {
         Video video = videoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Video no encontrado"));
+        //Video video = obtenerVideoPorId(id);      
         video.setLikes(video.getLikes() + 1);
         return videoRepository.save(video);
     }
@@ -81,6 +86,7 @@ public class VideoService {
     public Video toggleFavorito(Long id) {
         Video video = videoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Video no encontrado"));
+        //Video video = obtenerVideoPorId(id);      
         video.setEsFavorito(!video.getEsFavorito());
         return videoRepository.save(video);
     }
